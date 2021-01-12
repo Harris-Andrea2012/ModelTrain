@@ -1,0 +1,367 @@
+{% extends 'base.html' %} {% block head %}
+<title>Home</title>
+{% endblock %} {% block body %}
+
+<div>
+    <div class="mt-header jumbotron jumbotron-fluid">
+        <h1 class="mt-logo">ModelTrain</h1>
+    </div>
+
+    <div class="container-fluid">
+        <div class="home-content row">
+            <div class="col-3 home-sidebar">
+                <div class="account-container">
+                    <h3 class="text-center">Account</h3>
+                    <p class="text-center">
+                        <span class="font-weight-bold">Username: </span>{{ current_user.username}} <br>
+                        <span class="font-weight-bold">Email: </span>{{current_user.email}} <br>
+                        <span class="font-weight-bold">Member Since: </span> {{ current_user.memberDate.date() }}
+                        <br>
+
+                    </p>
+                    <div class="account-btns">
+                        <button class="btn mx-auto mt-button" type="button" data-bs-toggle="modal" data-bs-target="#editInfoModal">
+                            <a href="#" >Edit</a>
+                        </button>
+                        <button class="btn mx-auto mt-button-orange" type="button" data-bs-toggle="modal" data-bs-target="#deleteAcctModal">
+                            <a href="#" >Delete Account</a>
+                        </button>
+                        <button class="btn mx-auto mt-outline-button" id="logout-btn" type="button">
+                            <a href="{{ url_for('logout') }}" >Logout</a>
+                        </button>
+
+                    </div>
+
+
+                    <div class="modal fade" id="editInfoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Update Account</h5>
+                                    <button type="button" id="closeEditModal" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ url_for('editAccount')}}" method="POST" id="acctUpdateForm">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <div class="modal-body editForm">
+                                        <p>Make changes to your account information here.</p>
+
+                                        <div class="alert mb-4 alert-dismissible fade show" id="acctUpdateMsg" role="alert">
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                                        </div>
+
+
+                                        <div class="row mb-4">
+                                            <div class="col-8">
+                                                <label for="username">Username</label>
+                                                <input type="text" placeholder="{{ current_user.username }}" name="username" id="username" disabled>
+
+                                            </div>
+                                            <div class="col-4 mx-auto">
+                                                <button class="btn mt-button" type="button" id="toggleUsername">Edit</button>
+
+                                            </div>
+                                        </div>
+                                        <div class="row mb-4">
+                                            <div class="col-8">
+                                                <label for="email">Email</label>
+                                                <input type="email" name="email" id="email" placeholder="{{ current_user.email }}" disabled>
+
+                                            </div>
+                                            <div class="col-4 mx-auto">
+                                                <button class="btn mt-button" id="toggleEmail" type="button">Edit</button>
+
+                                            </div>
+                                        </div>
+                                        <div class="row mb-4">
+                                            <div class="col-8">
+                                                <label for="password">Password</label>
+                                                <input class="mb-3" type="password" name="password" placeholder="*************" id="password" disabled>
+                                                <input type="checkbox" name="showPswd" id="showPswd">
+                                                <label for="showPswd" id="showLabel"> Show Me</label>
+                                            </div>
+                                            <div class="col-4 mx-auto">
+                                                <button class="btn mt-button" id="togglePassword" type="button">Edit</button>
+
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+                                    <div class="modal-footer">
+
+                                        <button type="submit" class="btn mt-button-orange">Submit Changes</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="deleteAcctModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Delete Account</h5>
+                                    <button type="button" id="closeDelModal" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete your account? All of your data projects will be erased.</p>
+
+                                </div>
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn mt-button-orange"><a href="{{ url_for('deleteAccount') }}">Delete</a></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="pastProjects">
+                    <h3 class="text-center">Past Projects</h3>
+                    <div class="accordion accordion-flush" id="pastProjects">
+
+                        {% for project in projects %}
+
+                        <div>
+                            <h2 class="accordion-header" id="pastProject{{ project.id }}-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pastProject{{ project.id }}-collapse" aria-expanded="false" aria-controls="pastProject{{ project.id }}-collapse">
+                              {{project.name}}
+                            </button>
+                            </h2>
+                            <div id="pastProject{{ project.id }}-collapse" class="accordion-collapse collapse" aria-labelledby="pastProject{{ project.id }}-header" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn pastProject-btn mt-button">
+                                        <a href="{{ url_for('projectPage', project_id = project.id)}}" class="text-center">View</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %} {% if projects|length == 0 %}
+                        <div>
+                            <p class="text-center">No projects yet! Click the Begin button to get started.</p>
+                        </div>
+                        {% endif %}
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="home-main col-9">
+                {% if update %}
+                <div class="alert alert-success mb-4 alert-dismissible fade show" role="alert" id="updateSuccess">{{ update }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                <h5>Start a New Project</h5>
+                <button class="btn  mt-button-orange" type="button"><a href="{{url_for('createProject')}}">Begin</a></button>
+                <h5>Most Recent Project</h5>
+
+                {% if recent_project != None%}
+                <p>
+                    <span>Project Name: </span>{{ recent_project.name }}<br>
+                    <span>Last Modified Date: </span>{{ recent_project.lastAccessDate.date() }}<br>
+                    <span>Raw Data: </span>{{recent_project.rawData_name}}<br>
+                    <span>Processed Data: </span>{{ recent_project.procData_name}}
+                </p>
+
+                <button class="btn mt-button"><a href="{{ url_for('projectPage', project_id = recent_project.id)}}">View</a></button> {% else %}
+                <div style="padding: 2% 0;">
+                    <p>No projects yet! Click the Begin button to get started.</p>
+                </div>
+
+
+                {% endif %}
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<script>
+    function toggleInputs() {
+        const toggleUsername = document.getElementById('toggleUsername')
+        const toggleEmail = document.getElementById('toggleEmail')
+        const togglePassword = document.getElementById('togglePassword')
+
+        const username = document.getElementById('username')
+        const email = document.getElementById('email')
+        const password = document.getElementById('password')
+
+        toggleUsername.addEventListener('click', e => {
+            if (toggleUsername.textContent == 'Edit') {
+                toggleUsername.textContent = 'Reset'
+            } else {
+                toggleUsername.textContent = 'Edit'
+            }
+
+            toggleUsername.classList.toggle('toggle-btn')
+            username.toggleAttribute('disabled')
+
+
+        })
+
+        toggleEmail.addEventListener('click', e => {
+            if (toggleEmail.textContent == 'Edit') {
+                toggleEmail.textContent = 'Reset'
+            } else {
+                toggleEmail.textContent = 'Edit'
+            }
+
+            toggleEmail.classList.toggle('toggle-btn')
+            email.toggleAttribute('disabled')
+
+
+        })
+
+        togglePassword.addEventListener('click', e => {
+            if (togglePassword.textContent == 'Edit') {
+                togglePassword.textContent = 'Reset'
+            } else {
+                togglePassword.textContent = 'Edit'
+            }
+
+            togglePassword.classList.toggle('toggle-btn')
+            password.toggleAttribute('disabled')
+
+
+        })
+
+
+
+    }
+
+    function showPassword() {
+        const showCheckbox = document.getElementById('showPswd')
+        const password = document.getElementById('password')
+
+        showCheckbox.addEventListener('change', e => {
+            if (showCheckbox.checked) {
+                password.type = 'text'
+            } else {
+                password.type = 'password'
+            }
+
+        })
+
+
+    }
+
+    function checkUpdate() {
+        const form = document.getElementById('acctUpdateForm')
+        const updateMsg = document.getElementById('acctUpdateMsg')
+        let invalidPassword = null
+        let errors = []
+        let inputs = null
+
+
+        form.addEventListener('submit', e => {
+            inputs = document.querySelectorAll('#acctUpdateForm input:enabled')
+            console.log('Number Enabled: ' + inputs.length)
+
+            inputs.forEach(input => {
+                console.log('Input: ' + input.type)
+
+                if (input.type == 'password') {
+
+                    const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+                    if (!input.value.match(pattern)) {
+
+                        errors.push('Password must between 6-20 characters. Try again!\n')
+                        errors.push('Password must container a number. Try again!\n')
+                        errors.push('Password must contain an uppercase letter. Try again!\n')
+                        errors.push('Password must contain an lowercase letter. Try again!\n')
+                    }
+
+                    if (errors.length != 0) {
+                        invalidPassword = true
+
+                    }
+                }
+
+
+
+            })
+
+            console.log('INVALID PASSWORD VALUE: ' + invalidPassword)
+
+            if (inputs.length > 1) {
+
+                if (invalidPassword != null) {
+                    console.log('INVALID PASSWORD')
+
+                    updateMsg.classList.toggle('alert-danger')
+                    updateMsg.style.display = 'block';
+                    updateMsg.innerText = errors.join('')
+
+                    e.preventDefault()
+
+                    setTimeout(() => {
+                        invalidPassword = null
+                        errors = []
+                        inputs = null
+                        updateMsg.classList.toggle('alert-danger')
+                        updateMsg.style.display = 'none';
+
+                    }, 2000);
+                } else {
+
+                    console.log('SUBMIT OK')
+                }
+
+            } else {
+                errors.push('Submit at least 1 change to update your account. \n')
+                updateMsg.classList.toggle('alert-danger')
+                updateMsg.style.display = 'block';
+                updateMsg.innerText = errors.join('')
+
+                e.preventDefault()
+                setTimeout(() => {
+                    invalidPassword = null
+                    errors = []
+                    inputs = null
+                    updateMsg.classList.toggle('alert-danger')
+
+                    updateMsg.style.display = 'none';
+
+                }, 4000);
+
+            }
+
+
+
+
+
+
+
+
+        })
+    }
+
+
+
+
+    showPassword()
+    toggleInputs()
+    checkUpdate()
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %} {% block head %}
+<title>Sign Up</title>
+{% endblock %} {% block body %}
+
+
+
+<div class="signUp-img container-fluid">
+    <img src="{{ url_for('static', filename='images/platform.jpg')}}" alt="img">
+
+</div>
+
+
+<div class="container-fluid signUp-form mx-auto">
+    <h1 class="text-center">ModelTrain</h1>
+    <p class="text-center">A machine learning platform where you can get hands on with your data. ModelTrain houses all your projects and results in one convenient place.
+    </p>
+    {% if message %} {% if style == 'success' %}
+    <div class="alert alert-success mb-4 alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+    </div>
+    {% else %}
+    <div class="alert alert-danger mb-4 alert-dismissible fade show" role="alert">
+
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+    </div>
+    {% endif %} {% endif %}
+
+    <h3>Sign Up</h3>
+    <form action="{{url_for('signUp')}}" method="POST" id="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="mb-4">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="mb-4">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="mb-4">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="mb-4">
+            <label for="repeatPassword">Repeat Password</label>
+            <input type="password" id="repeatPassword" name="repeatPassword" required>
+        </div>
+        <div class="signUp-buttons d-flex justify-content-between">
+            <button type="submit" class="btn mt-button" id="signUp-submit">Submit</button>
+            <button type="button" class="btn mt-outline-button">
+                <a class="loginLink" href="{{ url_for('login')}}">Login here...</a>
+                
+            </button>
+
+        </div>
+
+
+    </form>
+
+
+    <div class="alert alert-danger alert-dismissible fade show" id="signUpMsg" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+    </div>
+
+
+</div>
+
+
+<script>
+    const container = document.querySelector('.signUp-form')
+    const form = document.getElementById('form')
+    const password = document.getElementById('password')
+    const repeatPassword = document.getElementById('repeatPassword')
+    const errorMsg = document.getElementById('signUpMsg')
+
+    form.addEventListener('submit', e => {
+
+        let errors = []
+
+        const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+        if (!password.value.match(pattern)) {
+            errors.push('Password must between 6-20 characters. Try again!\n')
+            errors.push('Password must container a number. Try again!\n')
+            errors.push('Password must contain an uppercase letter. Try again!\n')
+            errors.push('Password must contain an lowercase letter. Try again!\n')
+        }
+
+
+        if (password.value != repeatPassword.value) {
+            errors.push('Password entries do not match. Try again!\n')
+
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault()
+
+            errorMsg.style.display = 'block';
+            errorMsg.innerText = errors.join('')
+
+        }
+
+
+    })
+</script>
+
+
+
+
+
+
+{% endblock %}

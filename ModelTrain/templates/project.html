@@ -1,0 +1,291 @@
+{% extends 'base.html' %} {% block head %}
+
+<title>Project Name</title> {% endblock %} {% block body %}
+
+<div class="container-fluid">
+
+    <div class="mt-header jumbotron jumbotron-fluid">
+        <nav>
+            <ul class="d-flex flex-row justify-content-end">
+                <li><a href="{{ url_for('home')}}">Home</a></li>
+                <li><a href="{{ url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+        <h1 class="mt-logo" id="logoUnderNav"> ModelTrain</h1>
+    </div>
+
+    <div class="row mx-auto">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="projectPg-content">
+            <div class="projectDetails">
+                <p id="rawDataString" hidden>{{data.rawData}}</p>
+                <p id="procDataString" hidden>{{data.procData}}</p>
+                <p id="resDataString" hidden>{{data.result_df}}</p>
+                <p id="projectName" hidden>{{ data.project.name}}</p>
+                <p id="modelScore" hidden>{{ data.model.score}}</p>
+                <p id="modelName" hidden>{{data.model.name}}</p>
+
+                <h5>Project Details</h5>
+                <p>
+                    <span class="projectDetail">Project Name: </span> {{ data.project.name}}<br>
+                    <span class="projectDetail">Last Access Date: </span> {{data.project.lastAccessDate}}<br>
+                    <span class="projectDetail">Model: </span>{{data.model.name}}<br>
+                    <span class="projectDetail">Raw Data: </span>{{data.project.rawData_name}}<br>
+                    <span class="projectDetail">Processed Data: </span>{{data.project.procData_name}}<br>
+
+                </p>
+
+            </div>
+
+            <div class="projectRawData">
+            </div>
+
+            {% if procData != None%}
+
+            <div class="projectProcData">
+            </div>
+
+            {% endif %}
+
+
+
+            <div class="projectResultData mt-3">
+            </div>
+            <button style="width: 35%;" class="btn mt-button-orange"><a href="{{ url_for('deleteProject', project_id = data.project.id)}}">Delete This Project</a></button>
+
+
+
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script>
+    function resizeDf(df_type, numRows, direction, callback) {
+        const formData = new FormData()
+        const csrf = document.querySelector('input[name="csrf_token"]').value
+        const projectName = document.getElementById('projectName').textContent
+        const modelName = document.getElementById('modelName').textContent
+
+        if (numRows == '') {
+            numRows = 0
+        }
+
+        formData.append('df_type', df_type)
+        formData.append('modelName', modelName)
+
+        formData.append('numRows', numRows)
+        formData.append('direction', direction)
+        formData.append('csrf_token', csrf)
+        formData.append('projectName', projectName)
+
+        fetch('/createProject/selectDfSize/False', {
+                method: 'post',
+                body: formData,
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                callback(data)
+            })
+            .catch(error => console.log(error))
+
+
+    }
+
+
+    function popRaw() {
+        const rawWrapper = document.querySelector('.projectRawData')
+        rawWrapper.innerHTML = `
+        <h5 class = "mb-3">Raw Data</h5>
+        <div class="rawDf"></div>
+        <div class = "rawSizing">
+            <div class="mb-4 d-flex ">
+                
+                <div class="me-4">
+                    <label for="rawRows" class="form-label" style="display: inline-block; color: #36223B;">Number of rows displayed: </label>
+                    <input  style="display:inline-block; width: auto;" type="number" class="form-control" id="rawRows" name="numRows" min="1" max="50">
+
+                </div>
+                <div>
+                    <select  id="directionRaw" name="direction"class="form-select" style="display: inline-block; width: auto;" aria-label="Select head or tail">
+                                <option  value="head" selected>Show dataframe from the Head or Tail?</option>
+                                <option value="head">Head</option>
+                                <option value="tail">Tail</option>
+                            </select>
+                </div>
+         
+
+            </div>
+            <button  id="rawSizingButton" style = "width: 25%;" class="btn mt-button mb-5">Show</button>
+        </div>
+
+        `
+
+        const rawDf = document.querySelector('.rawDf')
+        const rawDataString = document.getElementById('rawDataString')
+        rawDf.innerHTML = rawDataString.textContent
+
+        const sizeButton = document.getElementById('rawSizingButton')
+        sizeButton.addEventListener('click', e => {
+            const numRows = document.getElementById('rawRows').value
+            const direction = document.getElementById('directionRaw').value
+            console.log('DIRECTION ', direction)
+
+
+            resizeDf('raw', numRows, direction, (data) => {
+                rawDf.innerHTML = data.dataframe
+
+            })
+        })
+
+    }
+
+    function popRes() {
+        const resWrapper = document.querySelector('.projectResultData')
+        resWrapper.innerHTML = `
+            <h5 class = "mb-3">Result Data</h5>
+            <p id="resScore" style="color:#36223B;">Score: </p>
+
+            <div >
+                {% if data.model_object is not none %}
+                <h5 style = "font-size: 1.3rem; margin-top: 3rem; color:#fd6a3d;"  >LDA Topics</h5>
+                <div>
+                    {% for topic in data.model_object.print_topics(num_topics=-1, num_words = 5) %}
+
+                    <div class="lda_topic">{{topic}}</div>
+
+                </div>
+
+                {% endfor %} {% endif %}
+            </div>
+            <h5 style = "font-size: 1.3rem; margin-top: 3rem; color:#fd6a3d;" >Model Result</h5>
+            <div class="resDf"></div>
+            <div class = "resSizing">
+            <div class="mb-4 d-flex ">
+                <div class="me-4">
+                    <label for="resRows" class="form-label" style="display: inline-block; color: #36223B;">Number of rows displayed: </label>
+                    <input  style="display:inline-block; width: auto;" type="number" class="form-control" id="resRows" name="numRows" min="1" max="50">
+
+                </div>
+                <div>
+                    <select  id="directionRes" name="direction"class="form-select" style="display: inline-block; width: auto;" aria-label="Select head or tail">
+                                <option  value="head" selected>Show dataframe from the Head or Tail?</option>
+                                <option value="head">Head</option>
+                                <option value="tail">Tail</option>
+                            </select>
+                </div>
+         
+
+            </div>
+            <button  id="resSizingButton" style = "width: 25%;" class="btn mt-button mb-5">Show</button>
+        </div>
+
+        `
+
+        const resDf = document.querySelector('.resDf')
+        const resultScore = document.getElementById('resScore')
+        const score = document.getElementById('modelScore')
+
+        resultScore.textContent = resultScore.textContent + score.textContent
+
+        const resDataString = document.getElementById('resDataString')
+        resDf.innerHTML = resDataString.textContent
+
+        const sizeButton = document.getElementById('resSizingButton')
+        sizeButton.addEventListener('click', e => {
+            const numRows = document.getElementById('resRows').value
+            const direction = document.getElementById('directionRes').value
+
+
+
+            resizeDf('res', numRows, direction, (data) => {
+                resDf.innerHTML = data.dataframe
+
+            })
+        })
+
+
+
+
+    }
+
+    function popProc(hasData) {
+
+
+
+        if (hasData === true) {
+            const procWrapper = document.querySelector('.projectProcData')
+            procWrapper.innerHTML = `
+            <h5 class = "mb-3">Processed Data</h5>
+            <div class="procDf"></div>
+            <div class = "procSizing">
+            <div class="mb-4 d-flex ">
+                <div class="me-4">
+                    <label for="procRows" class="form-label" style="display: inline-block; color: #36223B;">Number of rows displayed: </label>
+                    <input  style="display:inline-block; width: auto;" type="number" class="form-control" id="procRows" name="numRows" min="1" max="50">
+
+                </div>
+                <div>
+                    <select  id="directionProc" name="direction"class="form-select" style="display: inline-block; width: auto;" aria-label="Select head or tail">
+                                <option  value="head" selected>Show dataframe from the Head or Tail?</option>
+                                <option value="head">Head</option>
+                                <option value="tail">Tail</option>
+                            </select>
+                </div>
+         
+
+            </div>
+            <button  id="procSizingButton" style = "width: 25%;" class="btn mt-button mb-5">Show</button>
+        </div>
+
+        `
+
+            const procDf = document.querySelector('.procDf')
+            const procDataString = document.getElementById('procDataString')
+            procDf.innerHTML = procDataString.textContent
+
+            const sizeButton = document.getElementById('procSizingButton')
+            sizeButton.addEventListener('click', e => {
+                const numRows = document.getElementById('procRows').value
+                const direction = document.getElementById('directionProc').value
+
+
+
+                resizeDf('proc', numRows, direction, (data) => {
+                    procDf.innerHTML = data.dataframe
+
+                })
+            })
+
+        }
+
+
+    }
+
+    popRaw()
+
+    function isData() {
+        const procDataString = document.getElementById('procDataString')
+
+        if (procDataString.textContent != 'None') {
+
+            return true
+        }
+        return false
+
+    }
+
+    const hasData = isData()
+    console.log('HAS DATA VALUE', hasData)
+
+    popProc(hasData)
+    popRes()
+</script>
+
+
+{% endblock %}

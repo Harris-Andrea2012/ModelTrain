@@ -1,0 +1,624 @@
+/*******************GENERAL CSS***********************/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+}
+
+html,
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: 'Vast Shadow', cursive;
+    color: #93E0BC;
+    font-size: clamp(1.6rem, 3.8vw, 5rem);
+}
+
+h3 {
+    color: #FFBCA9;
+    font-size: clamp(1.3rem, 2vw, 2rem);
+}
+
+h5 {
+    color: #36223B;
+    font-size: clamp(1.3rem, 2vw, 2rem);
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+p,
+label {
+    color: #EDDCF1;
+    font-size: clamp(14px, 2vw, 18px);
+}
+
+label {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+}
+
+.container-fluid {
+    margin: 0;
+    padding: 0;
+}
+
+.btn.mt-button {
+    background-color: #63cf9d;
+    color: #36223B;
+    font-weight: bold;
+    border: none;
+    border-radius: 0;
+}
+
+.btn.mt-button:hover {
+    background-color: #93E0BC !important;
+}
+
+.btn.mt-button-orange {
+    background-color: #fd6a3d;
+    color: #36223B;
+    font-weight: bold;
+    border: none;
+    border-radius: 0;
+}
+
+.btn.mt-button-orange:hover {
+    background-color: #ff7b00;
+}
+
+.btn.mt-outline-button {
+    background-color: transparent;
+    border: 2px solid #81978d;
+    font-weight: bold;
+    color: #FFBCA9;
+    border-radius: 0;
+}
+
+.btn.mt-outline-button:hover {
+    background-color: #FFBCA9;
+    color: #36223B;
+}
+
+
+/*******************SIGNUP***********************/
+
+.signUp-img {
+    position: absolute;
+    height: 50vh;
+    z-index: -1;
+    transform: translateY(-50%);
+    top: 50vh;
+}
+
+.signUp-form {
+    padding: 2% 5%;
+    width: 45%;
+    height: auto;
+    background-color: #5C505F;
+}
+
+.signUp-form form {
+    margin-bottom: 1.5rem;
+}
+
+.signUp-form p {
+    margin-bottom: 2rem;
+}
+
+.signUp-form input {
+    background-color: #78697C;
+    border: none;
+    width: 100%;
+    color: #EDDCF1;
+    padding: 5px;
+}
+
+.signUp-buttons button {
+    width: 35%;
+}
+
+.signUp-form a {
+    color: #FFBCA9;
+}
+
+.signUp-form a:hover {
+    color: #36223B;
+}
+
+#signUpMsg {
+    display: none;
+    margin-top: 1.5rem;
+}
+
+
+/************LOGIN********************/
+
+.login-bg {
+    position: absolute;
+    height: 50vh;
+    z-index: -1;
+}
+
+.login-form {
+    background-color: #5C505F;
+    padding: 2% 5%;
+    width: 50%;
+    height: auto;
+    position: relative;
+    top: 30vh;
+}
+
+.login-form h1,
+h3 {
+    margin-bottom: 1.5rem;
+}
+
+.login-form input {
+    background-color: #78697C;
+    border: none;
+    width: 100%;
+    color: #EDDCF1;
+    padding: 5px;
+}
+
+.login-form form div {
+    margin-bottom: 1.5rem;
+}
+
+.btn.loginButton {
+    width: 40%;
+}
+
+.btn.loginButton a {
+    color: #FFBCA9;
+}
+
+.btn.loginButton a:hover {
+    color: #36223B;
+}
+
+.login-graph {
+    width: 15rem;
+    height: 15rem;
+    position: relative;
+    top: -10vh;
+    left: 73vw;
+}
+
+
+/************HOME********************/
+
+.mt-header {
+    background-image: url("../images/trainIn.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 40vh;
+    width: 100%;
+}
+
+h1.mt-logo {
+    position: relative;
+    display: inline-block;
+    top: 18vh;
+    left: 55vw;
+    font-size: 3vw;
+    color: #36223B;
+}
+
+.home-content {
+    width: 100%;
+}
+
+.home-content a {
+    color: #36223B;
+}
+
+.home-content div {
+    padding: 2%;
+}
+
+.home-sidebar {
+    background-color: #5C505F;
+    height: 100%;
+}
+
+.home-sidebar div {
+    margin-bottom: 1rem;
+}
+
+.account-container span {
+    font-weight: bold;
+}
+
+.account-btns button {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.account-btns a {
+    text-decoration: none;
+    color: #36223B;
+}
+
+.modal-content {
+    background-color: #5C505F !important;
+}
+
+.modal-header {
+    margin-bottom: 1rem !important;
+}
+
+.modal-header h5 {
+    color: #EDDCF1 !important;
+}
+
+#acctUpdateMsg {
+    display: none;
+}
+
+.modal-header .btn-close {
+    width: auto;
+    background-color: transparent;
+    border: none;
+    color: #EDDCF1 !important;
+}
+
+.modal-header button:hover {
+    background-color: transparent;
+    border: none;
+}
+
+.modal-body {
+    margin-bottom: 0 !important;
+}
+
+.modal-body .row {
+    margin-bottom: 1rem !important;
+}
+
+.modal-body .row div {
+    padding-bottom: 0 !important;
+    margin-bottom: 0rem !important;
+}
+
+.modal-body input {
+    width: 100%;
+    padding: 5px;
+    background-color: #78697C;
+    color: #EDDCF1;
+}
+
+.modal-content input::placeholder {
+    color: #EDDCF1;
+    opacity: 1;
+}
+
+.modal-content input:-ms-input-placeholder {
+    color: #EDDCF1;
+}
+
+.modal-content input::-ms-input-placeholder {
+    color: #EDDCF1;
+}
+
+.modal-body .row .col-4 button {
+    padding-bottom: 0;
+}
+
+.modal-body button {
+    width: 100% !important;
+}
+
+.modal-body .row .col-4 {
+    padding-top: 2.5rem;
+}
+
+#showPswd {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+}
+
+#showLabel {
+    display: inline;
+}
+
+.modal-footer {
+    margin-bottom: 0 !important;
+}
+
+.modal-footer button {
+    width: 100% !important;
+}
+
+
+/*TOGGLE EDIT FORM*/
+
+.toggle-btn {
+    color: #FFBCA9 !important;
+    background-color: transparent !important;
+    border: 2px solid #93E0BC !important;
+}
+
+.toggle-btn:hover {
+    background-color: #FFBCA9 !important;
+    color: #36223B !important;
+}
+
+#logout-btn a {
+    color: #FFBCA9 !important;
+}
+
+#logout-btn a:hover {
+    color: #36223B !important;
+}
+
+.accordion h2 {
+    text-align: center;
+    color: #EDDCF1;
+}
+
+.accordion-body {
+    text-align: center;
+}
+
+.accordion-button {
+    background-color: #5C505F;
+    border-color: #5C505F;
+    color: #EDDCF1;
+    text-align: center;
+}
+
+.accordion-button:not(.collapsed) {
+    z-index: 3;
+    border-color: #78697C;
+    outline: 0;
+    color: #EDDCF1;
+    background-color: #78697C;
+}
+
+.pastProject-btn {
+    width: 70%;
+}
+
+.pastProjects a {
+    text-decoration: none;
+    color: #36223B;
+}
+
+.home-main p {
+    color: #36223B;
+}
+
+.home-main button.btn {
+    width: 25%;
+    margin-bottom: 4rem;
+}
+
+.home-main span {
+    font-weight: bold;
+}
+
+
+/*******************PROJECT PAGE*******************/
+
+.mt-header a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #36223B;
+    font-size: 1rem;
+}
+
+.mt-header ul {
+    margin-right: 5%;
+    padding-top: 2rem;
+}
+
+#logoUnderNav {
+    top: 10vh !important;
+}
+
+.mt-header li {
+    list-style: none;
+    margin-left: 2rem;
+}
+
+.projectPg-content {
+    padding: 5%;
+    height: auto;
+}
+
+.projectPg-content div {
+    margin-bottom: 2rem;
+    widows: 50%;
+}
+
+.projectDetails p {
+    color: #36223B !important;
+}
+
+.projectDetails .projectDetail {
+    font-weight: bold;
+}
+
+.projectPg-content .btn {
+    width: 50% !important;
+    margin-bottom: 4rem;
+}
+
+.projectPg-content .btn a {
+    color: #36223B;
+}
+
+
+/************CREATE PAGE********************/
+
+.navbar {
+    padding: 1rem 5%;
+    background-color: #5C505F;
+    width: 100%;
+}
+
+.navbar-brand {
+    text-decoration: none;
+    color: #FFBCA9;
+    font-family: 'Vast Shadow', sans-serif;
+}
+
+#importData p {
+    color: #36223B;
+}
+
+#navbarCreate .nav-link {
+    text-decoration: none;
+    color: #EDDCF1;
+}
+
+#createTitle {
+    color: #ff805b;
+    font-size: clamp(1.6rem, 3.8vw, 5rem);
+    padding: 4rem 5% 0;
+    font-weight: bold;
+}
+
+input.form-control {
+    background-color: #EEEEEE;
+    border-radius: 0;
+    width: 100%;
+}
+
+.create-container label {
+    color: #36223B;
+}
+
+.create-container p {
+    color: #36223B;
+}
+
+.upload-process {
+    padding-top: 2rem;
+}
+
+.importData {
+    padding: 0 3%;
+    margin: 2% 2% 5%;
+    box-shadow: 3px 7px 11px 2px #f3f3f3;
+}
+
+#importData {
+    width: 50%;
+}
+
+#importData .btn.mt-button {
+    width: 25%;
+    margin-bottom: 4rem;
+}
+
+.import-img {
+    width: 50%;
+    height: auto;
+}
+
+.import-img img {
+    width: 30rem;
+    height: 30rem;
+    float: right;
+}
+
+.upload-process div {
+    margin-bottom: 3rem;
+}
+
+.analysis {
+    padding: 0% 5% 2%;
+    color: #36223B;
+}
+
+.nav-tabs .nav-item.show .nav-link {
+    font-weight: bold;
+    color: #36223B;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fd6a3d;
+    font-weight: bold;
+}
+
+#createModel div {
+    margin-bottom: 4rem;
+}
+
+.preprocess .form-check {
+    margin-bottom: 1rem;
+}
+
+.model-select .btn.mt-button {
+    width: 25%;
+}
+
+#createModel .btn.mt-button-orange {
+    width: 100%;
+    margin-bottom: 4rem;
+    font-size: 1.5rem;
+    padding: 5px 0;
+}
+
+#createModel .form-check-input:checked {
+    background-color: #729EA1;
+    border-color: #729EA1;
+}
+
+.model-select .form-select {
+    width: 50%;
+    background-color: #EEEEEE;
+    margin-bottom: 1.5rem;
+}
+
+.tab-content {
+    padding-bottom: 5%;
+}
+
+.tab-content form {
+    padding-top: 2%;
+}
+
+.analysis .nav-tabs a {
+    color: #36223B;
+}
+
+
+/*LDA RESULT FRAME STYLIING*/
+
+.lda-result td {
+    width: 50% !important;
+    text-align: end !important;
+}
+
+
+/************MEDIA QUERIES********************/
+
+@media screen and (max-width: 975px) {
+    .login-graph {
+        top: 20vh;
+        left: 57vw;
+        width: 30vw;
+        height: 30vw;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .signUp-form {
+        width: 70%;
+    }
+}

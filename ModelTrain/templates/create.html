@@ -1,0 +1,593 @@
+{% extends 'base.html' %} {% block head %}
+<title>Create Project</title> {% endblock %} {% block body %}
+<div class="container-fluid create-container">
+    <div>
+        <nav class="navbar" id="navbarCreate">
+            <div>
+                <a class="navbar-brand py-3" href="#">ModelTrain</a>
+            </div>
+            <ul class="nav">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('signUp')}}">Logout</a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+    <h2 id="createTitle">Create a project.</h2>
+
+    <div class="importData">
+
+        <div class="d-flex flex-row justify-content-between mb-5">
+            {% if message %}
+            <div class="mb-4">{{ message }}</div>{% endif %}
+            <div class="mb-4" id="importData">
+                <div class="upload-process">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div>
+                        <h5>Name this project.</h5>
+                        <label for="projectName" class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="projectName" name="projectName" required>
+
+                    </div>
+
+                    <div>
+                        <h5>Import your dataset.</h5>
+                        <p>Upload dataset as a CSV file.</p>
+                        <label for="datasetFile" class="form-label">Dataset</label>
+                        <input class="form-control" style="margin-bottom: 3rem;" type="file" id="datasetFile" name="file" accept=".csv" required>
+
+                        <p>Enter the seperator. Default is ',' .</p>
+                        <label for="seperator" class="form-label">Seperator</label>
+                        <input style="width: 10%;" type="text" value=',' class="form-control" id="seperator" name="projectName" required>
+
+                    </div>
+
+
+
+                    <button class="btn mt-button" id="import-btn" onclick="importData()">Import</button>
+
+                    <div id="validationMessage">
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="import-img ">
+                <img src="{{ url_for('static', filename='images/upload.png')}}" alt="img" class="mx-auto">
+            </div>
+
+
+        </div>
+
+
+        <div class="rawDataFrame">
+
+        </div>
+
+
+    </div>
+
+
+    <div class="analysis">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-link active" id="dataModeling" data-bs-toggle="tab" href="#nav-modeling" role="tab" aria-controls="nav-modeling" aria-selected="true">Modeling</a>
+                <!-- <a class="nav-link" id="dataVis" data-bs-toggle="tab" href="#nav-vis" role="tab" aria-controls="nav-vis" aria-selected="false">Visualizations</a> -->
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-modeling" role="tabpanel" aria-labelledby="dataModeling">
+                <div id="createModel">
+                    <div class="preprocess">
+                        <h5 class="pt-5">Preprocess.</h5>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="preprocessMethod" id="noPreprocess" value="no" checked>
+                            <label class="form-check-label" for="noPreprocess">
+                              None
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="preprocessMethod" id="removeNulls" value="yes">
+                            <label class="form-check-label" for="removeNulls">
+                              Remove rows with null values
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="model-select">
+                        <h5>Choose a model.</h5>
+                        <select id="mlModel" name="mlModel" class="form-select" aria-label="Select ML Model">
+                            <option value="LinReg" selected>Open to select a model.</option>
+                            <option value="LinReg">Linear Regression</option>
+                            <option value="LDA">Latent Dirichlet Allocation</option>
+                         
+                          </select>
+                        <button class="btn mt-button" id="import-btn" onclick="getModelParams()">Select Model</button>
+
+                    </div>
+
+                    <div class="model-params">
+
+                    </div>
+
+
+
+                    <button class="btn mt-button-orange mb-5" id="run-btn" onclick="create_run()">Create and Run</button>
+
+                    <div class="runMsg">
+
+                    </div>
+
+                    <div class="runResult">
+
+                    </div>
+
+
+
+
+                </div>
+
+
+            </div>
+            <div class="tab-pane fade" id="nav-vis" role="tabpanel" aria-labelledby="dataVis">
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+    window.addEventListener('beforeunload', function(e) {
+        fetch('/finishCreate')
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+            // the absence of a returnValue property on the event will guarantee the browser unload happens
+        delete e['returnValue'];
+    });
+
+    function sendAjax(url, method, formData, callBack) {
+        const validMsg = document.querySelector('.runMsg')
+        const runButton = document.getElementById('run-btn')
+        fetch(url, {
+                method: method,
+                body: formData,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+
+                if (response.status !== 200) {
+
+                    console.log('ERROR')
+                    runButton.innerHTML = `Error Ocurred!`
+
+                    validMsg.innerHTML =
+                        `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Sorry, an error occured. Please try again later.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `
+
+                } else {
+                    response.json().then(data => {
+                        callBack(data)
+                    })
+
+
+                }
+
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+
+    }
+
+    function validateFormData(inputs) {
+        let faults = 0
+        inputs.forEach(input => {
+
+            if (input.name != 'csrf_token') {
+
+                if (!input.checkValidity()) {
+                    console.log('VALIDATE FORMData ERROR: ' + input.name)
+                    faults++
+                }
+            }
+
+
+        })
+
+        if (faults != 0) {
+            return false
+        }
+        return true
+    }
+
+
+    function importData() {
+        const projectName = document.querySelector('#projectName')
+        const dataFile = document.querySelector('#datasetFile')
+        const csrf = document.querySelector('input[name="csrf_token"]')
+        const validMsg = document.getElementById('validationMessage')
+        const seperator = document.getElementById('seperator')
+
+
+
+
+        const inputs = [projectName, dataFile, seperator]
+
+        const rawDfDiv = document.querySelector('.rawDataFrame')
+
+
+
+        if (validateFormData(inputs)) {
+            const formData = new FormData()
+            formData.append("projectName", projectName.value)
+            formData.append("file", dataFile.files[0])
+            formData.append("csrf_token", csrf.value)
+            formData.append("seperator", seperator.value)
+
+
+
+            sendAjax('/createProject/importData', 'POST', formData, (data) => {
+
+
+
+                validMsg.innerHTML = `
+                <div class="alert ${data.style} alert-dismissible fade show" role="alert">
+                   ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `
+                rawDfDiv.innerHTML = `
+                <h5 class = "mb-3">${data.name}</h5>
+                <div class="df-div"> ${data.dataframe}</div>
+               
+                <div>
+                    <div class="mb-4 d-flex"> 
+                        <div class="me-4">
+                            <label for="numRows" class="form-label" style="display: inline-block;">Number of rows displayed: </label>
+                            <input  style="display:inline-block; width: auto;" type="number" class="form-control" id="numRows" name="numRows" min="1" max="50">
+
+                        </div>
+                        <div>
+                            <select  id="direction" name="direction"class="form-select" style="display: inline-block; width: auto;" aria-label="Select head or tail">
+                                <option  value="head" selected>Show dataframe from the Head or Tail?</option>
+                                <option value="head">Head</option>
+                                <option value="tail">Tail</option>
+                            </select>
+                        </div>
+                     </div>
+                    <button style = "width: 25%;" class="btn mt-button mb-5"  onclick="showDF()">Show</button>
+
+                </div>
+               
+
+                `
+            })
+
+
+        } else {
+
+
+
+            validMsg.innerHTML = `
+            
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Invalid form input! Please make sure to complete all fields as directed.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `
+        }
+
+
+
+
+    }
+
+    function getModelParams() {
+        const modelType = document.getElementById('mlModel')
+        const modelParams = document.querySelector('.model-params')
+
+
+
+        if (modelType.value == 'LinReg') {
+            modelParams.innerHTML = `
+            <div>
+                <h5>Select parameters for linear regression model.</h5>
+                <p class = "mb-5">Which column will be the predictor? Enter the column name.</p>
+                <div>
+                    <input style="width: 25%;" type="text" class="form-control mb-5" id="yPredictor" name="yPredictor" required>
+
+                </div>
+            </div>
+            `
+        }
+        if (modelType.value == 'LDA') {
+            modelParams.innerHTML = `
+            <div>
+                <h5>Select parameters for lda model.</h5>
+                <p>Which column will the topic modeling be done for? Enter the column Name.</p>
+                <div>
+                    <input style="width: 25%;" type="text" class="form-control mb-5" id="text_column" name="text_column" required>
+
+                </div>
+
+                <p>During LDA preprocessing, stop words will supplied from NLTK.corpus. 
+                <br>Would you like to provide additional stop words to the model?
+                </p>
+               
+                <textarea class="form-control mb-5" rows = "10" placeholder="Enter additional stop words here as a comma-seperated list. 
+                \nFor example: for, when, hello...  \nIf not, you can leave this field blank." id="extra_stop_words" name="extra_stop_words"></textarea>
+               
+               
+                <p>Would you like to select the number of topics returned or let the model decide?</p>
+                <label for="inputTopicsNum" class="form-label">Enter the number of topics or leave blank</label>
+                <input   style="width: 10%; min = "0" type="number" class="form-control mb-5" id="num_topics" name="num_topics" >
+               
+
+                <p>Would you like to provide an alpha value to the LDA model? Alpha ranges from 0 to 1 with a 0.1 step in between.</p>
+                <label for="inputAlpha" class="form-label">Enter a value for alpha or leave blank</label>
+                <input  style="width: 10%; min = "0" step="0.1" type="number" class="form-control mb-5" id="alpha" name="alpha" >
+                
+
+                <p>Would you like to provide an beta value to the LDA model? Beta ranges from 0 to 1 with a 0.1 step in between.</p>
+                <label for="inputBeta" class="form-label">Enter a value for beta or leave blank</label>
+                <input  style="width: 10%; min = "0" step="0.1" type="number" class="form-control mb-5" id="beta" name="beta" >
+                
+
+
+            `
+
+
+
+
+
+
+        }
+
+    }
+
+
+
+    function showDF() {
+
+        const numRows = document.getElementById('numRows')
+        const direction = document.getElementById('direction')
+        const csrf = document.querySelector('input[name="csrf_token"]')
+        const filename = document.querySelector('#datasetFile').files[0].name
+
+
+        const dfDiv = document.querySelector('.df-div')
+
+        const formData = new FormData();
+
+        if (numRows.value == '') {
+            formData.append("numRows", 0)
+
+        } else if (numRows.value > 50) {
+            formData.append("numRows", 50)
+        } else {
+            formData.append("numRows", Math.abs(numRows.value))
+        }
+
+        formData.append("filename", filename)
+        formData.append("direction", direction.value)
+        formData.append("csrf_token", csrf.value)
+
+
+        sendAjax('/createProject/selectDfSize/True', 'POST', formData, (data) => {
+            dfDiv.innerHTML = `${data.dataframe}`
+        })
+
+
+    }
+
+    function showModel() {
+        const numRows = document.getElementById('modelRows')
+        const direction = document.getElementById('model_direction')
+        const csrf = document.querySelector('input[name="csrf_token"]')
+        const filename = document.querySelector('.model_filename').textContent
+        const modelName = document.querySelector('.model_name').textContent
+
+        const dfDiv = document.querySelector('.model_div')
+
+        const formData = new FormData();
+
+        if (numRows.value == '') {
+            formData.append("numRows", 0)
+
+        } else if (numRows.value > 50) {
+            formData.append("numRows", 50)
+        } else {
+            formData.append("numRows", Math.abs(numRows.value))
+        }
+        console.log('num rows value: ', numRows.value)
+
+        console.log('DIRECTION VALUE: ', direction.value)
+
+        console.log('FILENAME: ', filename)
+
+        formData.append("filename", filename)
+
+        formData.append("direction", direction.value)
+
+        formData.append("csrf_token", csrf.value)
+        formData.append("modelName", modelName)
+
+
+        sendAjax('/createProject/selectDfSize/True', 'POST', formData, (data) => {
+            dfDiv.innerHTML = `${data.dataframe}`
+        })
+
+    }
+
+    function create_run() {
+        const runButton = document.getElementById('run-btn')
+
+        runButton.innerHTML = `<span class="spinner-grow spinner-grow-sm me-4" role="status" aria-hidden="true"></span> ` +
+            'This could take a minute depending on datasize...be patient :)'
+
+
+        const preprocessOptions = document.getElementsByName('preprocessMethod')
+        let preprocessMethod
+        const modelType = document.getElementById('mlModel')
+        const runMsg = document.querySelector('.runMSG')
+        const dataFile = document.querySelector('#datasetFile')
+        const projectName = document.querySelector('#projectName')
+        const csrf = document.querySelector('input[name="csrf_token"]')
+
+        for (var i = 0; i < preprocessOptions.length; i++) {
+            if (preprocessOptions[i].checked == true) {
+                preprocessMethod = preprocessOptions[i]
+
+            }
+        }
+
+        let params
+        let inputs
+
+        if (modelType.value == 'LinReg') {
+            params = document.getElementById('yPredictor')
+            inputs = [params]
+        }
+        if (modelType.value == 'LDA') {
+            const targetParam = document.getElementById('text_column')
+            const stopwordsParam = document.getElementById('extra_stop_words')
+            const numTopicsParam = document.getElementById('num_topics')
+            const alphaParam = document.getElementById('alpha')
+            const betaParam = document.getElementById('beta')
+
+
+            params = [targetParam, stopwordsParam, numTopicsParam, alphaParam, betaParam]
+            inputs = params
+
+
+        }
+
+
+
+
+
+        if (validateFormData(inputs)) {
+            const formData = new FormData()
+            formData.append("preprocessMethod", preprocessMethod.value)
+            formData.append("modelType", modelType.value)
+            if (modelType.value == 'LDA') {
+
+                for (var i = 0; i < params.length; i++) {
+
+                    if (params[i].value == '') {
+                        formData.append(params[i].name, null)
+                    } else {
+                        formData.append(params[i].name, params[i].value)
+
+                    }
+
+                }
+
+
+            } else {
+                formData.append("params", params.value)
+
+            }
+
+            formData.append("csrf_token", csrf.value)
+            formData.append("projectName", projectName.value)
+
+
+
+            formData.append("file", dataFile.files[0])
+
+
+            sendAjax('/createProject/model_and_run', 'post', formData, (data) => {
+                console.log(data)
+                const runResult = document.querySelector('.runResult')
+
+                runButton.innerHTML = 'Done!'
+
+                runResult.innerHTML = `
+                <h5 class = "mb-3">${data.name}</h5>
+                <p>Score: ${data.score}</p>
+                
+                <div class="lda-topics-df"></div>
+                <h5 style = "margin-top: 1.5rem;" >Model Result</h5>
+                <div class="model_div"> ${data.dataframe}</div>
+               
+                <div>
+                    <div class="mb-4 d-flex"> 
+                        <p class="model_filename" hidden>${data.model_filename}</p>
+                        <p class="model_name" hidden>${data.name}</p>
+                        <p class="model_extra" hidden>${data.model_extra}</p>
+                        <div class="me-4">
+                            <label for="modelRows" class="form-label" style="display: inline-block;">Number of rows displayed: </label>
+                            <input  style="display:inline-block; width: auto;" type="number" class="form-control" id="modelRows" name="numRows" min="1" max="50">
+
+                        </div>
+                        <div>
+                            <select  id="model_direction" name="direction"class="form-select" style="display: inline-block; width: auto;" aria-label="Select head or tail">
+                                <option  value="head" selected>Show dataframe from the Head or Tail?</option>
+                                <option value="head">Head</option>
+                                <option value="tail">Tail</option>
+                            </select>
+                        </div>
+                     </div>
+                    <button style = "width: 25%;" class="btn mt-button mb-5"  onclick="showModel()">Show</button>
+
+                </div>
+                
+                      
+               
+                `
+
+                const model_extra = document.querySelector('.model_extra')
+                model_extra.innerHTML = data.model_extra
+                const lda_topics_div = document.querySelector('.lda-topics-df')
+
+
+                console.log('MODEL EXTRA text content', model_extra.textContent)
+                if (model_extra.textContent != 'null') {
+
+                    lda_topics_div.innerHTML = ` 
+                    <div>
+                        <div> ${model_extra.innerHTML} </div> 
+                    </div>
+                    
+                        
+                        
+                    `
+
+                }
+
+
+            })
+
+
+        } else {
+            runMsg.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Invalid form input! Please make sure to complete all fields as directed.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `
+        }
+
+
+
+
+
+    }
+</script>
+{% endblock %}
