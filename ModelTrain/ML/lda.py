@@ -10,7 +10,7 @@ import gensim
 from gensim.utils import simple_preprocess
 from gensim.corpora import Dictionary
 from gensim.models import CoherenceModel, LdaModel
-from ModelTrain import nltk
+import nltk
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from ModelTrain.ML.ml_util import df_to_html
