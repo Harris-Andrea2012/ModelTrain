@@ -75,7 +75,7 @@
             numRows = 0
         }
 
-        formData.append('df_type', df_type)
+
         formData.append('modelName', modelName)
 
         formData.append('numRows', numRows)
@@ -83,7 +83,7 @@
         formData.append('csrf_token', csrf)
         formData.append('projectName', projectName)
 
-        fetch('/createProject/selectDfSize/False', {
+        fetch(`/createProject/selectDfSize/${df_type}`, {
                 method: 'post',
                 body: formData,
                 credentials: 'same-origin'

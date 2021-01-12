@@ -17,7 +17,7 @@ from ModelTrain.ML.ml_util import df_to_html
 from ModelTrain import app
 
 
-def lda(file_path, params):
+def lda(dataframe, params,  projectName, projectId):
     print('STARTING LDA')
     values = dict()
     for (param, value) in params.items():
@@ -28,7 +28,7 @@ def lda(file_path, params):
                 values[param] = value
 
    
-    df = file_path
+    df = dataframe
 
     text_df = pd.DataFrame(df[values['text_column']])
 
@@ -66,16 +66,7 @@ def lda(file_path, params):
     lda_model = LdaModel(corpus=BoW, id2word=text_dictionary, random_state=100, passes=10,
                                     **values)
 
-    filename = 'ldaModel.pkl'
-    file_loc = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
-
-    with open(file_loc, 'wb') as file:
-        pickle.dump(lda_model, file)
-    
-    
-    with open(file_loc, 'rb') as file:
-        model_object = pickle.load(file)
-    
+   
     
     print('GETTING C_V')
 
@@ -99,9 +90,10 @@ def lda(file_path, params):
     model = {
         'name': 'Latent Dirichlet Allocation',
         'score': coherence_score,
-        'model_object': model_object,
-        'filename': filename,
-        'result': text_n_topic_df
+        'model_object': lda_model,
+        'result': text_n_topic_df,
+        'project_id': projectId,
+        'project_name': projectName
         
     }
 
@@ -113,7 +105,7 @@ def get_lda_extra(model):
     df = pd.DataFrame(topics, columns=['Topic Id', 'Topic'])
     df.set_index('Topic Id', inplace=True)
 
-    print_lda =df_to_html(df, convert_to_df=False)
+    print_lda =df_to_html(df)
     return print_lda
    
 

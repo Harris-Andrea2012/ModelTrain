@@ -4,7 +4,7 @@ from ModelTrain.ML import linReg, lda
 
 
 
-def df_to_html(df_file, convert_to_df= 'True', direction = 'head', numRows = 0, extra_class = None):
+def df_to_html(df_file, direction = 'head', numRows = 0, extra_class = None):
     
     
     class_string = 'table table-striped table-hover frame-style'
@@ -13,10 +13,8 @@ def df_to_html(df_file, convert_to_df= 'True', direction = 'head', numRows = 0, 
 
 
    
-    if convert_to_df == 'True':
-        df = pd.read_csv(df_file)
-    else:
-        df = df_file
+    
+    df = df_file
     
     max_rows = len(df.index)
     default = 20
@@ -72,26 +70,17 @@ def df_to_html(df_file, convert_to_df= 'True', direction = 'head', numRows = 0, 
 def drop_nulls(dataframe):
     return dataframe.dropna(axis = 0, how= 'any', inplace = False)
 
-def model_train(dataframe, model, params):
+def model_train(dataframe, model, params, projectName, projectId):
     if model == 'LinReg':
-        model_linReg=linReg.LinRegModel(dataframe, params)
+        model_linReg=linReg.LinRegModel(dataframe, params, projectName, projectId)
         return model_linReg
     if model =='LDA':
 
-        model_lda = lda.lda(dataframe, params)
+        model_lda = lda.lda(dataframe, params, projectName, projectId)
         return model_lda
     return None
     
-def get_model_results(df, model_name, params):
-    if model_name == 'LinReg':
-        results = linReg.ytrue_ypredict(df, params)
-        return results
-    
-    if model_name == 'LDA':
-        results = df
-        return results
-   
-    return None
+
    
    
 

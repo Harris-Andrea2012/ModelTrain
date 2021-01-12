@@ -363,6 +363,7 @@
 
 
     function showDF() {
+        const projectName = document.querySelector('#projectName')
 
         const numRows = document.getElementById('numRows')
         const direction = document.getElementById('direction')
@@ -386,9 +387,10 @@
         formData.append("filename", filename)
         formData.append("direction", direction.value)
         formData.append("csrf_token", csrf.value)
+        formData.append("projectName", projectName.value)
 
 
-        sendAjax('/createProject/selectDfSize/True', 'POST', formData, (data) => {
+        sendAjax('/createProject/selectDfSize/raw', 'POST', formData, (data) => {
             dfDiv.innerHTML = `${data.dataframe}`
         })
 
@@ -401,6 +403,8 @@
         const csrf = document.querySelector('input[name="csrf_token"]')
         const filename = document.querySelector('.model_filename').textContent
         const modelName = document.querySelector('.model_name').textContent
+        const projectName = document.querySelector('#projectName')
+
 
         const dfDiv = document.querySelector('.model_div')
 
@@ -426,9 +430,11 @@
 
         formData.append("csrf_token", csrf.value)
         formData.append("modelName", modelName)
+        formData.append("projectName", projectName.value)
 
 
-        sendAjax('/createProject/selectDfSize/True', 'POST', formData, (data) => {
+
+        sendAjax('/createProject/selectDfSize/res', 'POST', formData, (data) => {
             dfDiv.innerHTML = `${data.dataframe}`
         })
 
