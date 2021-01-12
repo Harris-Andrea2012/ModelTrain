@@ -10,9 +10,7 @@ import gensim
 from gensim.utils import simple_preprocess
 from gensim.corpora import Dictionary
 from gensim.models import CoherenceModel, LdaModel
-import nltk
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
+from ModelTrain import nltk
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from ModelTrain.ML.ml_util import df_to_html
