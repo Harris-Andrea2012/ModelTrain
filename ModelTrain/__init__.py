@@ -23,13 +23,14 @@ if ENVIRON == 'Dev':
     app.debug = True
     DB_USER= os.environ.get('DB_USER_DEV')
     DB_PASSWORD= os.environ.get('DB_PASSWORD_DEV')
+    DB_URL = 'postgresql://{0}:{1}@localhost/ModelTrain'.format(DB_USER, DB_PASSWORD)
 else:
     app.debug = False
-    DB_USER= os.environ.get('DB_USER_DEPLOY')
-    DB_PASSWORD= os.environ.get('DB_PASSWORD_DEPLOY')
+    DB_URL= os.environ.get('DATABASE_URL')
+    
 
 #Will have to fix the localhost variable later
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{0}:{1}@localhost/ModelTrain'.format(DB_USER, DB_PASSWORD)
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
