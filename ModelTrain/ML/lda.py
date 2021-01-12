@@ -11,7 +11,7 @@ from gensim.utils import simple_preprocess
 from gensim.corpora import Dictionary
 from gensim.models import CoherenceModel, LdaModel
 import nltk
-nltk.download('all')
+nltk.download('stopwords')
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from ModelTrain.ML.ml_util import df_to_html
