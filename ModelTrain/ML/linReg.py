@@ -32,7 +32,7 @@ def LinRegModel(df, y_col, projectName, projectId):
         'name': 'Linear Regression',
         'score': score,
         'model_object': model_object,
-        'result_dataframe': true_pred_df,
+        'result': true_pred_df,
         'project_id': projectId,
         'project_name': projectName
 
