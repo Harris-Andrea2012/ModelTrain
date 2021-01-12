@@ -171,7 +171,7 @@ def importData():
     name = request.form['projectName']
     sep = request.form['seperator']
 
-    if len(upload_size) > 0:
+    if len(upload_size) > 1:
 
         old_file_name= os.listdir(os.path.join(app.root_path, app.config['UPLOAD_FOLDER']))[1]
         old_file = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'] , old_file_name)
