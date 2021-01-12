@@ -183,6 +183,11 @@ def importData():
         file.save(raw_df_path)
 
         raw_data = pd.read_csv(raw_df_path, sep = sep)
+        if(len(raw_data.index) > 300):
+            raw_data = raw_data.head(300)
+
+        #TEST SAVING RAWDATA SMALLER TO STOP ISSUE
+        
 
         #SAVE PROJECT TO DATABASE
        
