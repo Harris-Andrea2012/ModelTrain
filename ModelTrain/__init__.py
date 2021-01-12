@@ -15,7 +15,6 @@ from flask_login import LoginManager
 
 app = Flask(__name__)
 
-q = Queue(connection=conn)
 
 
 SECRET = os.environ.get('SECRET_KEY')
