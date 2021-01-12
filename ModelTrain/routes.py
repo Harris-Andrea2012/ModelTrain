@@ -173,7 +173,7 @@ def importData():
 
     if len(upload_size) > 0:
 
-        old_file_name= os.listdir(os.path.join(app.root_path, app.config['UPLOAD_FOLDER']))[0]
+        old_file_name= os.listdir(os.path.join(app.root_path, app.config['UPLOAD_FOLDER']))[1]
         old_file = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'] , old_file_name)
         os.remove(old_file)
         
@@ -460,8 +460,12 @@ def removeFiles():
     uploads_folder = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     try:
         for file in os.listdir(uploads_folder):
-            file = os.path.join(uploads_folder, file)
-            os.remove(file)
+            print(file)
+            if file == '.gitignore':
+                pass
+            else:
+                file = os.path.join(uploads_folder, file)
+                os.remove(file)
         print('DIRECTORY CLEARED')
     except:
         print('ERROR REMOVING USER SESSION FILES')
