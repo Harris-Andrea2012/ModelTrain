@@ -12,7 +12,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 
+
 app = Flask(__name__)
+
+q = Queue(connection=conn)
+
 
 SECRET = os.environ.get('SECRET_KEY')
 
@@ -48,6 +52,8 @@ UPLOAD_FOLDER = 'static/uploads'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'csv'}
+
+
 
 
 from ModelTrain import routes

@@ -13,6 +13,11 @@ import pandas as pd
 from datetime import datetime, timedelta
 import traceback
 
+from rq import Queue
+from worker import conn
+
+q = Queue(connection=conn)
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -333,7 +338,9 @@ def create_run():
                     found_project.procData = proc_dataframe
                     db.session.commit()
 
-                    created=model_train(proc_dataframe, modelType, params, projectName, found_project.id)
+                    created = q.enqueue(model_train, proc_dataframe, modelType, params, projectName, found_project.id )
+
+                    #created=model_train(proc_dataframe, modelType, params, projectName, found_project.id)
                 except Exception:
                     traceback.print_exc()
                     removeFiles()
@@ -351,8 +358,10 @@ def create_run():
 
 
             else:
+                created = q.enqueue(model_train, df, modelType, params, projectName, found_project.id )
 
-                created = model_train(df, modelType, params, projectName, found_project.id)
+
+                #created = model_train(df, modelType, params, projectName, found_project.id)
             
              
         
