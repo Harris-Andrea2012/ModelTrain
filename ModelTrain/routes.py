@@ -358,7 +358,9 @@ def create_run():
 
 
             else:
-                created = q.enqueue(model_train, df, modelType, params, projectName, found_project.id )
+                job = q.enqueue(model_train, df, modelType, params, projectName, found_project.id )
+                print('CREATED TYPE ', type(job))
+                print('JOB RESULT ', job.result )
 
 
                 #created = model_train(df, modelType, params, projectName, found_project.id)
