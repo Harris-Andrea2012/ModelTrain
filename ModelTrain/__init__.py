@@ -19,7 +19,7 @@ SECRET = os.environ.get('SECRET_KEY')
 app.secret_key = SECRET
 
 
-if ENVIRON == 'dev':
+if ENVIRON == 'Dev':
     app.debug = True
     DB_USER= os.environ.get('DB_USER_DEV')
     DB_PASSWORD= os.environ.get('DB_PASSWORD_DEV')
