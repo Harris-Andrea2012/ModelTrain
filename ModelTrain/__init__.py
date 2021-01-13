@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 from rq import Queue
+
 from worker import conn
 
 q = Queue(connection=conn)

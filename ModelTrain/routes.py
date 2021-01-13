@@ -14,6 +14,10 @@ from datetime import datetime, timedelta
 import traceback
 
 from time import strftime
+from rq.job import Job
+
+from worker import conn
+
 
 
 
@@ -370,6 +374,8 @@ def create_run():
 
 
                 })
+                task_id = task.id
+                print('TASK ID ', task_id)
 
                 jobs = q.jobs
                 q_len = len(q)  # Get the queue length
@@ -377,7 +383,10 @@ def create_run():
                 
                 while task.get_status() != 'finished':
                     pass
-                created = task.result
+                completed = Job.fetch(task_id, connection=conn)
+                print('JOB STATUS AFTER FINISHED TEST ', completed.get_status())
+                print('JOB RESULT AFTER COMPLETE TEST ', completed.result)
+                
                 print(f"Task ended at {task.ended_at.strftime('%a, %d %b %Y %H:%M:%S')}")
 
 
