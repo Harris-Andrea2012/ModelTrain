@@ -373,7 +373,7 @@ def create_run():
                 'analyst_id': current_user.id
 
 
-            }, timeout=900)
+            }, job_timeout=900)
             task_id = task.id
             print('TASK ID ', task_id)
 
