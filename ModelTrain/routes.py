@@ -82,6 +82,8 @@ def home():
         recent_project = None
     
     user = current_user
+    print('FLASK CURRENT_USER', current_user)
+    print('USER ', user)
 
     return render_template('home.html', projects = projects, recent_project = recent_project, user=user)
 
