@@ -1,10 +1,11 @@
 import pandas as pd
-
+import jinja2
 from ModelTrain.ML import linReg, lda
 from ModelTrain import db, app
 from ModelTrain.models import Analyst, Project, Model
 from flask import url_for, render_template
 from flask_login import login_user, current_user
+import os
 
 
 
@@ -97,9 +98,18 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
 
     user = Analyst.query.get(analyst_id)
 
-    with app.app_context(), app.test_request_context():
+    template_loc = os.path.join(app.root_path, 'templates')
+
+    return jinja2.environment(loader= jinja2.FileSystemLoader(template_loc + '/')
+    .get_template('home').render( update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
+    )
+
+    
+
+    # with app.app_context(), app.test_request_context():
+
         
-        return render_template('home.html', update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
+    #     return render_template('home.html', update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
 
     
 
