@@ -436,7 +436,10 @@ def deleteProject(project_id):
         else:
             recent_project = None
         
-        return render_template('home.html', update = 'Project deleted successfully!', projects = projects, recent_project = recent_project)
+        user = current_user
+        
+        return render_template('home.html', update = 'Project deleted successfully!', 
+                        projects = projects, recent_project = recent_project, user=user)
      
 
 def removeFiles():
