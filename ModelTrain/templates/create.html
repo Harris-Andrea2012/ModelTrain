@@ -46,7 +46,7 @@
                         <input style="width: 10%;" type="text" value=',' class="form-control" id="seperator" name="projectName" required>
 
 
-                        <p style="margin-top: 2rem;">Please Note: All data will be returned with a max row count of 300</p>
+                        <p style="margin-top: 2rem;">Please Note: All data will be returned with a max row count of 1000</p>
                     </div>
 
 
@@ -543,7 +543,7 @@
                                 if (data.task_status == 'finished') {
                                     isDone = true
                                     runButton.innerHTML = `
-                                <a href="{{ url_for('home')}} ">Done! Click for Results!</a>
+                                <a style= "color: white;" href="{{ url_for('home')}} ">Done! Click for Results!</a>
                                 `
 
 
