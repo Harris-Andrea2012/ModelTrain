@@ -1,5 +1,5 @@
 import pandas as pd
-import jinja2
+from jinja2 import Environment, PackageLoader, select_autoescape
 from ModelTrain.ML import linReg, lda
 from ModelTrain import db, app
 from ModelTrain.models import Analyst, Project, Model
@@ -100,21 +100,15 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
 
     template_loc = os.path.join(app.root_path, 'templates')
 
-    return jinja2.environment(loader= jinja2.FileSystemLoader(template_loc + '/')
-    .get_template('home').render( update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
-    )
+    env = Environment(loader=PackageLoader('ModelTrain', 'templates'),
+                    autoescape=select_autoescape(['html', 'xml'])
+                    )
+    template = env.get_template('home.html')
+    return template.render(update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
 
+
+
+  
     
 
-    # with app.app_context(), app.test_request_context():
-
-        
-    #     return render_template('home.html', update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
-
     
-
-   
-   
-
-
-
