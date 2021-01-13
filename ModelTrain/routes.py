@@ -110,7 +110,9 @@ def editAccount():
     else:
         recent_project = None
 
-    return render_template('home.html', update = 'Account updated successfully!', projects = projects, recent_project = recent_project)
+
+    return render_template('home.html', update = 'Account updated successfully!', 
+    projects = projects, recent_project = recent_project, user=user)
 
 
 @app.route('/project/<int:project_id>')
