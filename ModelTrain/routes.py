@@ -1,6 +1,6 @@
 from flask import render_template, url_for, request, redirect, jsonify, make_response, session
 from passlib.hash import pbkdf2_sha256
-from ModelTrain import app, db, ALLOWED_EXTENSIONS
+from ModelTrain import app, db, ALLOWED_EXTENSIONS, q
 from ModelTrain.models import Analyst, Project, Model
 import pickle
 from ModelTrain.ML import linReg, lda
@@ -13,10 +13,9 @@ import pandas as pd
 from datetime import datetime, timedelta
 import traceback
 
-from rq import Queue
-from worker import conn
+from time import strftime
 
-q = Queue(connection=conn)
+
 
 
 
@@ -281,6 +280,8 @@ def setDF_size(frame_type):
 @app.route('/createProject/model_and_run', methods=['POST'])
 @login_required 
 def create_run():
+    #JOBS
+    jobs = q.jobs
     preprocessMethod = request.form['preprocessMethod']
     modelType = request.form['modelType']
 
@@ -358,11 +359,21 @@ def create_run():
 
 
             else:
-                job = q.enqueue(model_train, df, modelType, params, projectName, found_project.id )
-                print('CREATED TYPE ', type(job))
-                print('JOB RESULT ', job.result )
+                
+                #TESTING OUT JOBS AND QUES 
+                task = q.enqueue(model_train, kwargs={
+                    'dataframe': df,
+                    'model': modelType,
+                    'params':params,
+                    'projectName': projectName,
+                    'projectId':found_project.id
 
 
+                })
+
+                jobs = q.jobs
+                q_len = len(q)  # Get the queue length
+                print(f"Task queued at {task.enqueued_at.strftime('%a, %d %b %Y %H:%M:%S')}. {q_len} jobs queued")
                 #created = model_train(df, modelType, params, projectName, found_project.id)
             
              
