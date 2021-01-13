@@ -374,6 +374,14 @@ def create_run():
                 jobs = q.jobs
                 q_len = len(q)  # Get the queue length
                 print(f"Task queued at {task.enqueued_at.strftime('%a, %d %b %Y %H:%M:%S')}. {q_len} jobs queued")
+                
+                while task.get_status() != 'finished':
+                    pass
+                created = task.result
+                print(f"Task ended at {task.ended_at.strftime('%a, %d %b %Y %H:%M:%S')}")
+
+
+                print('CREATED VALUE ', created)
                 #created = model_train(df, modelType, params, projectName, found_project.id)
             
              
