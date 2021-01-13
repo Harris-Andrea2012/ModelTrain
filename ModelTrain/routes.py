@@ -384,6 +384,7 @@ def create_run():
             while in_progress.model == []:
                 sleep(20)
                 print('NOT READY YET')
+                in_progress = Project.query.get(found_project.id)
             print('READY')
 
             
