@@ -1,6 +1,10 @@
 import pandas as pd
 
 from ModelTrain.ML import linReg, lda
+from ModelTrain import db, app
+from ModelTrain.models import Analyst, Project, Model
+from flask import url_for
+
 
 
 
@@ -72,13 +76,43 @@ def drop_nulls(dataframe):
 
 def model_train(dataframe, model, params, projectName, projectId):
     if model == 'LinReg':
-        model_linReg=linReg.LinRegModel(dataframe, params, projectName, projectId)
-        return model_linReg
+        model_result=linReg.LinRegModel(dataframe, params, projectName, projectId)  
     if model =='LDA':
+        model_result = lda.lda(dataframe, params, projectName, projectId)
 
-        model_lda = lda.lda(dataframe, params, projectName, projectId)
-        return model_lda
-    return None
+    
+
+    project_model = Model(model_result['name'], model_result['score'], model_result['model_object'], 
+                                    model_result['result'],model_result['project_id'])
+    db.session.add(project_model)
+    db.session.commit()
+
+    
+    # if model_result['name'] == 'Latent Dirichlet Allocation':
+    #     modeled_df = df_to_html(model_result['result'], extra_class=' lda-result')
+    #     model_extra = ''
+    #     for (topic_id, topic) in model_result['model_object'].print_topics(num_topics=-1, num_words=5):
+    #         line =  '<br>Topic Id: '+ str(topic_id)+ '<br>Topic: '+ str(topic) + '<br>'
+    #         model_extra += line
+
+    # if model_result['name'] == 'Linear Regression':
+    #     modeled_df = df_to_html(model_result['result'])
+    #     model_extra = None
+
+    # model_return = {
+    #     'name': model_result['name'],
+    #     'score': model_result['score'],
+    #     'projectName':model_result['projectName'],
+    #     'dataframe': modeled_df,
+    #     'model_extra': model_extra
+    # }
+    
+
+    with app.test_request_context('/api'):
+        project_id = model_result['project_id']
+        url_for('projectPage',  project_id = project_id)
+
+
     
 
    

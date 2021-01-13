@@ -11,6 +11,7 @@ sys.path.append('../ModelTrain')
 
 
 
+
 def LinRegModel(df, y_col, projectName, projectId):
     print('STARTING LINEAR REGRESSION')
     y = df[y_col]
@@ -29,16 +30,17 @@ def LinRegModel(df, y_col, projectName, projectId):
 
 
     model = {
-        'name': 'Linear Regression',
-        'score': score,
-        'model_object': model_object,
-        'result': true_pred_df,
-        'project_id': projectId,
-        'project_name': projectName
+         'name': 'Linear Regression',
+         'score': score,
+         'model_object': model_object,
+         'result': true_pred_df,
+         'project_id': projectId,
+         'project_name': projectName
 
         
-    }
+     }
 
+  
     return model
     
 

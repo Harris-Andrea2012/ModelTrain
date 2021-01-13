@@ -343,9 +343,8 @@ def create_run():
                     found_project.procData = proc_dataframe
                     db.session.commit()
 
-                    created = q.enqueue(model_train, proc_dataframe, modelType, params, projectName, found_project.id )
+                    df = proc_dataframe
 
-                    #created=model_train(proc_dataframe, modelType, params, projectName, found_project.id)
                 except Exception:
                     traceback.print_exc()
                     removeFiles()
@@ -362,71 +361,22 @@ def create_run():
                     return res
 
 
-            else:
                 
                 #TESTING OUT JOBS AND QUES 
-                task = q.enqueue(model_train, kwargs={
-                    'dataframe': df,
-                    'model': modelType,
-                    'params':params,
-                    'projectName': projectName,
-                    'projectId':found_project.id
+            task = q.enqueue(model_train, kwargs={
+                'dataframe': df,
+                'model': modelType,
+                'params':params,
+                'projectName': projectName,
+                'projectId':found_project.id
 
 
-                })
-                task_id = task.id
-                print('TASK ID ', task_id)
+            })
+            task_id = task.id
+            print('TASK ID ', task_id)
 
-                jobs = q.jobs
-                q_len = len(q)  # Get the queue length
-                print(f"Task queued at {task.enqueued_at.strftime('%a, %d %b %Y %H:%M:%S')}. {q_len} jobs queued")
-                
-                while task.get_status() != 'finished':
-                    pass
-                completed = Job.fetch(task_id, connection=conn)
-                print('JOB STATUS AFTER FINISHED TEST ', completed.get_status())
-                print('JOB RESULT AFTER COMPLETE TEST ', completed.result)
-                
-                print(f"Task ended at {task.ended_at.strftime('%a, %d %b %Y %H:%M:%S')}")
-
-
-                print('CREATED VALUE ', created)
-                #created = model_train(df, modelType, params, projectName, found_project.id)
             
-             
-        
-            model_name = created['name']
-            score = created['score']
-            model_pkl = created['model_object']
-            result_df = created['result']
-            project_id = created['project_id']
-
-        
-            project_model = Model(model_name, score, model_pkl, result_df, project_id)
-            db.session.add(project_model)
-            db.session.commit()
-
-           
-            if model_name == 'Latent Dirichlet Allocation':
-                modeled_df = df_to_html(result_df, extra_class=' lda-result')
-                model_extra = ''
-                for (topic_id, topic) in model_pkl.print_topics(num_topics=-1, num_words=5):
-                    line =  '<br>Topic Id: '+ str(topic_id)+ '<br>Topic: '+ str(topic) + '<br>'
-                    model_extra += line
-
-            if model_name == 'Linear Regression':
-                modeled_df = df_to_html(result_df)
-                model_extra = None
-
-            model_return = {
-                'name': model_name,
-                'score': score,
-                'projectName':projectName,
-                'dataframe': modeled_df,
-                'model_extra': model_extra
-            }
-
-            res = make_response(jsonify(model_return), 200)
+            res = make_response(jsonify({'message': 'its processing now'}), 200)
             return res
         except Exception:
             traceback.print_exc()
