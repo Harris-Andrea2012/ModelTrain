@@ -90,7 +90,7 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
     db.session.commit()
     
     
-    with app.app_context():
+    with app.app_context(), app.test_request_context():
         data = render_template('signUp.html')
         
     return data
