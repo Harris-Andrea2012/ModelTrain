@@ -368,7 +368,8 @@ def create_run():
                 'model': modelType,
                 'params':params,
                 'projectName': projectName,
-                'projectId':found_project.id
+                'projectId':found_project.id,
+                'analyst_id': current_user.id
 
 
             })
