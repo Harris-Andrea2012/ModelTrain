@@ -91,7 +91,7 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
     
     
     with app.app_context():
-        data = render_template('signUp')
+        data = render_template('signUp.html')
         
     return data
 
