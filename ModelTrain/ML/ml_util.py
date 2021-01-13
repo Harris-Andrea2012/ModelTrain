@@ -88,6 +88,19 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
                                     model_result['result'],model_result['project_id'])
     db.session.add(project_model)
     db.session.commit()
+    
+    
+    with app.app_context():
+        data = render_template('signUp')
+        
+    return data
 
-   
+
+ 
+
+
+
+  
+    
+
     
