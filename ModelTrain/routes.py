@@ -380,7 +380,7 @@ def create_run():
             print('TASK ID ', task_id)
 
             
-            res = make_response(jsonify({'message': 'its processing now'}), 200)
+            res = make_response(jsonify({'task_status': task.get_status(), 'task_id':task_id}), 200)
             return res
         except Exception:
             traceback.print_exc()
@@ -399,6 +399,28 @@ def create_run():
     
     else:
         print('ERROR IN OUTER LAYER: NO PROJECT FOUND BY NAME')
+
+@app.route('/checkJobStatus/<jobId>')
+@login_required
+def checkJobStatus(jobId):
+    job = Job.fetch(jobId, connection=conn)
+    if job.get_status() == 'finished':
+        print('JOB COMPLETED')
+        user = current_user
+        projects = Project.query.filter_by(analyst_id = current_user.id).all()
+
+        if len(projects) >0:
+            projects.sort(key = lambda x: x.lastAccessDate, reverse=True)
+            recent_project = projects[0]
+        else:
+            recent_project = None
+
+        return render_template('home.html', update = 'Project deleted successfully!', 
+                        projects = projects, recent_project = recent_project, user=user)
+    else:
+        return make_response(jsonify({'task_status': job.get_status()}), 200)
+
+
     
     
 

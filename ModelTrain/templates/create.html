@@ -520,67 +520,35 @@
             formData.append("file", dataFile.files[0])
 
 
+
+
+
             sendAjax('/createProject/model_and_run', 'post', formData, (data) => {
-                console.log(data)
-                const runResult = document.querySelector('.runResult')
-
                 runButton.innerHTML = 'Got it and Working!'
-                    /*
 
-                runResult.innerHTML = `
-                <h5 class = "mb-3">${data.name}</h5>
-                <p>Score: ${data.score}</p>
-                
-                <div class="lda-topics-df"></div>
-                <h5 style = "margin-top: 1.5rem;" >Model Result</h5>
-                <div class="model_div"> ${data.dataframe}</div>
-               
-                <div>
-                    <div class="mb-4 d-flex"> 
-                        <p class="model_filename" hidden>${data.model_filename}</p>
-                        <p class="model_name" hidden>${data.name}</p>
-                        <p class="model_extra" hidden>${data.model_extra}</p>
-                        <div class="me-4">
-                            <label for="modelRows" class="form-label" style="display: inline-block;">Number of rows displayed: </label>
-                            <input  style="display:inline-block; width: auto;" type="number" class="form-control" id="modelRows" name="numRows" min="1" max="50">
-
-                        </div>
-                        <div>
-                            <select  id="model_direction" name="direction"class="form-select" style="display: inline-block; width: auto;" aria-label="Select head or tail">
-                                <option  value="head" selected>Show dataframe from the Head or Tail?</option>
-                                <option value="head">Head</option>
-                                <option value="tail">Tail</option>
-                            </select>
-                        </div>
-                     </div>
-                    <button style = "width: 25%;" class="btn mt-button mb-5"  onclick="showModel()">Show</button>
-
-                </div>
-                
-                      
-               
-                `
-               
-                const model_extra = document.querySelector('.model_extra')
-                model_extra.innerHTML = data.model_extra
-                const lda_topics_div = document.querySelector('.lda-topics-df')
+                console.log('TASK ID ', data.task_id)
+                console.log('TASK STATUS ', data.task_status)
+                let status = data.task_status
+                const id = data.task_id
 
 
-                console.log('MODEL EXTRA text content', model_extra.textContent)
-                if (model_extra.textContent != 'null') {
 
-                    lda_topics_div.innerHTML = ` 
-                    <div>
-                        <div> ${model_extra.innerHTML} </div> 
-                    </div>
-                    
-                        
-                        
-                    `
+                while (status != 'finished') {
+                    setTimeout(() => {
 
+                        fetch(`/checkJobStatus/${id}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                status = data.task_status
+                            })
+
+                    }, 30000);
 
                 }
-                */
+
+
+
+
 
 
             })

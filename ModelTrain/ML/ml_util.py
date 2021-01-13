@@ -89,26 +89,5 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
     db.session.add(project_model)
     db.session.commit()
 
-    projects = Project.query.filter_by(analyst_id = analyst_id).all()
-    if len(projects) >0:
-        projects.sort(key = lambda x: x.lastAccessDate, reverse=True)
-        recent_project = projects[0]
-    else:
-        recent_project = None
-
-    user = Analyst.query.get(analyst_id)
-
-    template_loc = os.path.join(app.root_path, 'templates')
-
-    env = Environment(loader=PackageLoader('ModelTrain', 'templates'),
-                    autoescape=select_autoescape(['html', 'xml'])
-                    )
-    template = env.get_template('home.html')
-    return template.render(update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
-
-
-
-  
-    
-
+   
     
