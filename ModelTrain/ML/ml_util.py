@@ -96,7 +96,7 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
 
     
 
-    with app.app_context():
+    with app.app_context(), app.test_request_context():
         
         data=render_template('home.html', update = 'New project created!', projects = projects, recent_project = recent_project)
 
