@@ -380,7 +380,7 @@ def create_run():
             print('TASK ID ', task_id)
 
             
-            res = make_response(jsonify({'task_status': task.get_status(), 'task_id':task_id}), 200)
+            res = make_response(jsonify({'task_status': task.get_status(), 'task_id':task_id, 'project_id': found_project.id}), 200)
             return res
         except Exception:
             traceback.print_exc()
