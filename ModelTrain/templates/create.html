@@ -532,7 +532,7 @@
 
                 console.log('TASK ID ', data.task_id)
                 console.log('TASK STATUS ', data.task_status)
-                let isDone = false
+
 
                 runButton.onclick = function() {
                     runButton.innerHTML = 'Ok checking...'
@@ -541,9 +541,15 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.task_status == 'finished') {
-                                    isDone = true
+
                                     runButton.innerHTML = `
                                 <a style= "color: white;" href="{{ url_for('home')}} ">Done! Click for Results!</a>
+                                `
+
+
+                                } else if (data.task_status == 'failed') {
+                                    runButton.innerHTML = `
+                                <a style= "color: white;" href="{{ url_for('home')}} ">Error Occured! Attempt Discard. Click to Return Home</a>
                                 `
 
 
