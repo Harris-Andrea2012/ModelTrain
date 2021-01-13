@@ -13,7 +13,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import traceback
 
-from time import strftime, sleep
+from time import strftime
 from rq.job import Job
 
 from worker import conn
@@ -379,14 +379,6 @@ def create_run():
             task_id = task.id
             print('TASK ID ', task_id)
 
-            in_progress = Project.query.get(found_project.id)
-            print('INPROGRESS MODEL', in_progress.model)
-            while in_progress.model == []:
-                sleep(20)
-                print('NOT READY YET')
-                in_progress = Project.query.get(found_project.id)
-            print('READY')
-
             
             res = make_response(jsonify({'task_status': task.get_status(), 'task_id':task_id}), 200)
             return res
@@ -408,6 +400,12 @@ def create_run():
     else:
         print('ERROR IN OUTER LAYER: NO PROJECT FOUND BY NAME')
 
+@app.route('/checkJobStatus/<jobId>')
+@login_required
+def checkJobStatus(jobId):
+    job = Job.fetch(jobId, connection=conn)
+    return make_response(jsonify({'task_status': job.get_status(), 'task_id':job.id}), 200)
+    
 
 
     

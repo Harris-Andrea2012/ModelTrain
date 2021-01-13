@@ -524,10 +524,30 @@
 
 
             sendAjax('/createProject/model_and_run', 'post', formData, (data) => {
-                runButton.innerHTML = 'Got it and Working!'
+                setTimeout(() => {
+                    runButton.innerHTML = 'Processing! Press to Check Status'
+
+                }, 10000);
 
                 console.log('TASK ID ', data.task_id)
                 console.log('TASK STATUS ', data.task_status)
+                let isDone = false
+
+                runButton.onclick = function() {
+                    fetch(`/checkJobStatus/${data.task_id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.task_status == 'finished') {
+                                isDone = true
+                                runButton.innerHTML = 'Done! Click for Results'
+                            }
+
+                        })
+
+                }
+
+
+
 
 
             })
