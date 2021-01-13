@@ -528,27 +528,6 @@
 
                 console.log('TASK ID ', data.task_id)
                 console.log('TASK STATUS ', data.task_status)
-                let status = data.task_status
-                const id = data.task_id
-
-
-
-                while (status != 'finished') {
-                    setTimeout(() => {
-
-                        fetch(`/checkJobStatus/${id}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                status = data.task_status
-                            })
-
-                    }, 30000);
-
-                }
-
-
-
-
 
 
             })
