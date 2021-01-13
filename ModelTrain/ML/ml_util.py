@@ -4,6 +4,7 @@ from ModelTrain.ML import linReg, lda
 from ModelTrain import db, app
 from ModelTrain.models import Analyst, Project, Model
 from flask import url_for, render_template
+from flask_login import login_user, current_user
 
 
 
@@ -94,11 +95,11 @@ def model_train(dataframe, model, params, projectName, projectId, analyst_id):
     else:
         recent_project = None
 
-    
+    user = Analyst.query.get(analyst_id)
 
     with app.app_context(), app.test_request_context():
         
-        data=render_template('home.html', update = 'New project created!', projects = projects, recent_project = recent_project)
+        data=render_template('home.html', update = 'New project created!', projects = projects, recent_project = recent_project, user=user)
 
     
 

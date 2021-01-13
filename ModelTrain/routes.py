@@ -81,8 +81,9 @@ def home():
     else:
         recent_project = None
     
+    user = current_user
 
-    return render_template('home.html', projects = projects, recent_project = recent_project)
+    return render_template('home.html', projects = projects, recent_project = recent_project, user=user)
 
 @app.route('/home', methods=['POST'])
 @login_required
