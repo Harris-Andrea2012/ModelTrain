@@ -399,48 +399,7 @@
 
     }
 
-    function showModel() {
-        const numRows = document.getElementById('modelRows')
-        const direction = document.getElementById('model_direction')
-        const csrf = document.querySelector('input[name="csrf_token"]')
-        const filename = document.querySelector('.model_filename').textContent
-        const modelName = document.querySelector('.model_name').textContent
-        const projectName = document.querySelector('#projectName')
 
-
-        const dfDiv = document.querySelector('.model_div')
-
-        const formData = new FormData();
-
-        if (numRows.value == '') {
-            formData.append("numRows", 0)
-
-        } else if (numRows.value > 50) {
-            formData.append("numRows", 50)
-        } else {
-            formData.append("numRows", Math.abs(numRows.value))
-        }
-        console.log('num rows value: ', numRows.value)
-
-        console.log('DIRECTION VALUE: ', direction.value)
-
-        console.log('FILENAME: ', filename)
-
-        formData.append("filename", filename)
-
-        formData.append("direction", direction.value)
-
-        formData.append("csrf_token", csrf.value)
-        formData.append("modelName", modelName)
-        formData.append("projectName", projectName.value)
-
-
-
-        sendAjax('/createProject/selectDfSize/res', 'POST', formData, (data) => {
-            dfDiv.innerHTML = `${data.dataframe}`
-        })
-
-    }
 
     function create_run() {
         const runButton = document.getElementById('run-btn')
