@@ -1,6 +1,6 @@
 # ModelTrain
 
-Check it out here! [Deployed Site](https://model-train.herokuapp.com/)
+
 
 > ## Description
 >
